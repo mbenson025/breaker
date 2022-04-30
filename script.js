@@ -49,7 +49,7 @@ for (let i = 0; i < brickRowCount; i++) {
   for (let j = 0; j < brickColumnCount; j++) {
     const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
     const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
-    bricks[i][j] = { x,y, ...brickInfo }
+    bricks[i][j] = { x, y, ...brickInfo };
   }
 }
 
@@ -88,17 +88,17 @@ function drawBricks() {
       ctx.fillStyle = brick.visible ? '#4465dd' : 'transparent';
       ctx.fill();
       ctx.closePath();
-    })
-  })      
+    });
+  });   
 }
 
 //move paddle on canvas
 function movePaddle() {
-  paddle.x + paddle.dx;
+  paddle.x += paddle.dx;
 
   //wall detection
   if(paddle.x + paddle.w > canvas.width) {
-    paddle.x = canvas.width = paddle.w;
+    paddle.x = canvas.width - paddle.w;
   }
 
   if(paddle.x < 0) {
@@ -109,6 +109,9 @@ function movePaddle() {
 
 //draw everything
 function draw() {
+  //clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawPaddle();
   drawBall();
   drawScore();
@@ -131,7 +134,11 @@ update();
 
 //keydown event
 function keyDown(e) {
-  console.log(e.key);
+  if (e.key === 'Right' || e.key === 'ArrowRight') {
+    paddle.dx = paddle.speed;
+  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+    paddle.dx = -paddle.speed;
+  }
 }
 
 //keyup event
