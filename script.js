@@ -9,6 +9,9 @@ let score = 0;
 const brickRowCount = 9;
 const brickColumnCount = 5;
 
+
+//console.log(bricks)
+
 //create ball properties
 const ball = {
   x: canvas.width / 2,
@@ -89,6 +92,21 @@ function drawBricks() {
   })      
 }
 
+//move paddle on canvas
+function movePaddle() {
+  paddle.x + paddle.dx;
+
+  //wall detection
+  if(paddle.x + paddle.w > canvas.width) {
+    paddle.x = canvas.width = paddle.w;
+  }
+
+  if(paddle.x < 0) {
+    paddle.x = 0;
+  }
+}
+
+
 //draw everything
 function draw() {
   drawPaddle();
@@ -97,7 +115,34 @@ function draw() {
   drawBricks();
 }
 
-draw();
+//update canvas drawing and animation
+function update() {
+  movePaddle();
+  //draw everything
+  draw();
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+
+
+
+//keydown event
+function keyDown(e) {
+  console.log(e.key);
+}
+
+//keyup event
+function keyUp(e) {
+  console.log(2);
+}
+
+//keyboard event handlers
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
+
 
 //rules and close event handlers
 rulesBtn.addEventListener('click', () =>
