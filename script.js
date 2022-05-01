@@ -2,7 +2,12 @@ const rulesBtn = document.getElementById('rules-btn');
 const closeBtn = document.getElementById('close-btn');
 const rules = document.getElementById('rules');
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+var ctx = canvas.getContext('2d');
+
+//-----------
+// var raf;
+// var running = false;
+//-----------
 
 let score = 0;
 
@@ -28,7 +33,7 @@ const paddle = {
   y: canvas.height - 20,
   w: 80,
   h: 10,
-  speed: 8,
+  speed: 12,
   dx: 0
 }
 
@@ -57,7 +62,7 @@ for (let i = 0; i < brickRowCount; i++) {
 function drawPaddle() {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
-  ctx.fillStyle = '#4465dd';
+  ctx.fillStyle = '#101357';
   ctx.fill();
   ctx.closePath();
 }
@@ -67,7 +72,7 @@ function drawPaddle() {
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-  ctx.fillStyle = '#4465dd';
+  ctx.fillStyle = '#101357';
   ctx.fill();
   ctx.closePath();
 }
@@ -105,6 +110,8 @@ function movePaddle() {
     paddle.x = 0;
   }
 }
+
+
 
 //move ball on canvas
 function moveBall() {
@@ -160,8 +167,10 @@ function moveBall() {
 //increase score
 function increaseScore() {
   score++;
+  score++;
+  score++;
 
-  if (score % (brickRowCount * brickRowCount === 0)) {
+  if (score % (brickRowCount * brickRowCount) === 0) {
     showAllBricks();
   }
 }
@@ -178,6 +187,7 @@ function showAllBricks() {
 function draw() {
   //clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
 
   drawPaddle();
   drawBall();
@@ -223,9 +233,22 @@ function keyUp(e) {
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
+//mouse move control---5.1.22
+document.addEventListener('mousemove', mouseMoveHandler , false );
+//paddle movement based on mouse movement
+function mouseMoveHandler(e) {
+  var relativeX = e.clientX - canvas.offsetLeft;
+  if(relativeX>0 && relativeX < canvas.width) {
+    paddle.x = relativeX - paddle.w / 2;
+    
+  }
+}
+
 
 //rules and close event handlers
 rulesBtn.addEventListener('click', () =>
 rules.classList.add('show'));
 closeBtn.addEventListener('click', () =>
 rules.classList.remove('show'));
+
+  

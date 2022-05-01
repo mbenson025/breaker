@@ -5,7 +5,7 @@
 :root {
   --primary-color: #FC766AFF;
   --secondary-color: #184A45FF;
-  background-color: #808884FF;
+  background-color: #494D5F;
 }
 
 body {
@@ -26,7 +26,7 @@ h1 {
 
 
 canvas {
-  background: #f0f0f0;
+  background: #c2c5c5;
   display: block;
   border-radius: 5px;
 }
