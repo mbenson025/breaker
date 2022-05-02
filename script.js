@@ -25,7 +25,7 @@ let brickColumnCount = 5;
 const ball = {
   x: canvas.width / 2,
   y: canvas.height /2,
-  size: 10,
+  radius: 10,
   speed: 4,
   dx: 4,
   dy: -4
@@ -75,7 +75,7 @@ function drawPaddle() {
 //draw ball on canvas
 function drawBall() {
   ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = '#05ffa1';
   ctx.fill();
   ctx.closePath();
@@ -127,12 +127,12 @@ function moveBall() {
 
 
   //wall collision (right/left or x axis)
-  if(ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
+  if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
     ball.dx *= -1; //this is basically ball.dx = ball.dx * -1
   }
 
   //wall collision (top/bottom)
-  if(ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
+  if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
     ball.dy *= -1;
   }
 
@@ -140,8 +140,21 @@ function moveBall() {
 
   //paddle collision
   //always take into account size of object(why the subtraction)
-  if(ball.x - ball.size > paddle.x && ball.x + ball.size < paddle.x + paddle.w && ball.y + ball.size > paddle.y) {
-    ball.dy = -ball.speed;
+  if(ball.x - ball.radius > paddle.x && ball.x + ball.radius < paddle.x + paddle.w && ball.y + ball.radius > paddle.y) {
+    // ball.dy = -ball.speed;
+
+            // CHECK WHERE THE BALL HIT THE PADDLE
+        let collidePoint = ball.x - (paddle.x + paddle.w/2);
+        
+        // NORMALIZE THE VALUES
+        collidePoint = collidePoint / (paddle.w/2);
+        
+        // CALCULATE THE ANGLE OF THE BALL
+        let angle = collidePoint * Math.PI/3;
+            
+            //-1 to account for slow bounce speed? - IDK COME BACK HERE
+        ball.dx = ball.speed * Math.sin(angle);
+        ball.dy = - ball.speed * Math.cos(angle);
   }
 
 
@@ -150,10 +163,10 @@ function moveBall() {
     column.forEach(brick => {
       if (brick.visible) {
         if(
-          ball.x - ball.size > brick.x && // left brick side check
-          ball.x + ball.size < brick.x + brick.w && // right brick side check
-          ball.y + ball.size > brick.y && // top brick side check
-          ball.y - ball.size < brick.y + brick.h // bottom brick side check
+          ball.x - ball.radius > brick.x && // left brick side check
+          ball.x + ball.radius < brick.x + brick.w && // right brick side check
+          ball.y + ball.radius > brick.y && // top brick side check
+          ball.y - ball.radius < brick.y + brick.h // bottom brick side check
 
         ) {
           ball.dy *= -1;
@@ -258,5 +271,3 @@ rulesBtn.addEventListener('click', () =>
 rules.classList.add('show'));
 closeBtn.addEventListener('click', () =>
 rules.classList.remove('show'));
-
-  
