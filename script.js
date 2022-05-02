@@ -2,17 +2,21 @@ const rulesBtn = document.getElementById('rules-btn');
 const closeBtn = document.getElementById('close-btn');
 const rules = document.getElementById('rules');
 const canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 
-//-----------
-// var raf;
-// var running = false;
-//-----------
+//background image
+const bg_img = new Image();
+bg_img.src = "assets/images/vapormountains.jpg";
+
+
+
 
 let score = 0;
+let lives = 0;
 
-const brickRowCount = 9;
-const brickColumnCount = 5;
+
+let brickRowCount = 9;
+let brickColumnCount = 5;
 
 
 //console.log(bricks)
@@ -28,11 +32,11 @@ const ball = {
 }
 
 //create paddle properties
-const paddle = {
+let paddle = {
   x: canvas.width / 2 - 40,
   y: canvas.height - 20,
-  w: 80,
-  h: 10,
+  w: 100,
+  h: 12,
   speed: 12,
   dx: 0
 }
@@ -48,7 +52,7 @@ const brickInfo = {
 }
 
 //create bricks
-const bricks = [];
+let bricks = [];
 for (let i = 0; i < brickRowCount; i++) {
   bricks[i] = [];
   for (let j = 0; j < brickColumnCount; j++) {
@@ -62,7 +66,7 @@ for (let i = 0; i < brickRowCount; i++) {
 function drawPaddle() {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
-  ctx.fillStyle = '#101357';
+  ctx.fillStyle = '#05ffa1';
   ctx.fill();
   ctx.closePath();
 }
@@ -72,7 +76,7 @@ function drawPaddle() {
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-  ctx.fillStyle = '#101357';
+  ctx.fillStyle = '#05ffa1';
   ctx.fill();
   ctx.closePath();
 }
@@ -81,17 +85,20 @@ function drawBall() {
 //draw score
 function drawScore() {
   ctx.font = '20px Arial';
+  ctx.fillStyle = '#D407DE';
   ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
 }
 
 //draw bricks on canvas
 function drawBricks() {
+  this.image = document.getElementById("img_brick")
   bricks.forEach(column => {
     column.forEach(brick => {
       ctx.beginPath();
       ctx.rect(brick.x, brick.y, brick.w, brick.h);
       ctx.fillStyle = brick.visible ? '#4465dd' : 'transparent';
       ctx.fill();
+      this.markedForDeletion = false;
       ctx.closePath();
     });
   });   
@@ -151,6 +158,7 @@ function moveBall() {
         ) {
           ball.dy *= -1;
           brick.visible = false;
+          this.markedForDeletion = true;
 
           increaseScore();
         }
@@ -166,9 +174,7 @@ function moveBall() {
 
 //increase score
 function increaseScore() {
-  score++;
-  score++;
-  score++;
+  score += 3
 
   if (score % (brickRowCount * brickRowCount) === 0) {
     showAllBricks();
@@ -188,7 +194,7 @@ function draw() {
   //clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-
+  ctx.drawImage(bg_img, 0, 0);
   drawPaddle();
   drawBall();
   drawScore();
@@ -200,12 +206,13 @@ function update() {
   movePaddle();
   moveBall();
 
-
   //draw everything
   draw();
 
+
   requestAnimationFrame(update);
 }
+
 
 update();
 
@@ -214,6 +221,7 @@ update();
 
 //keydown event
 function keyDown(e) {
+  console.log(e);
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     paddle.dx = paddle.speed;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
